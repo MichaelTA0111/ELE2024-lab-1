@@ -90,34 +90,44 @@ class Car:
         return self.__pose
 
 
-class PController:
+class PdController:
     """
     Class to define the PController object
     """
 
     def __init__(self,
                  kp,
+                 kd,
                  ts):
         """
         Constructor for the PidController class
         :param kp: The continuous-time gain for the proportional controller
+        :param kd: The continuous-time gain for the differential controller
         :param ts: The sampling time of the controller
         """
         self.__kp = kp
+        self.__kd = kd / ts  # Discrete-time kd
         self.__ts = ts
+        self.__error_previous = None  # The error recorded the previous time it was calculated
 
     def control(self, y, set_point=0.):
         """
         Method to calculate the control error
         :param y: The measured value of y
         :param set_point: The set point value of y
-        :return: The P control variable
+        :return: The PD control variable
         """
         # Calculate the error
         error = set_point - y
 
         # Define u from the proportional controller
         u = self.__kp * error
+
+        # Add to u based on the differential controller
+        if self.__error_previous is not None:
+            u += self.__kd * (error - self.__error_previous)
+
+        self.__error_previous = error  # Store the calculated error as the previous error for future use
 
         return u
 
@@ -132,27 +142,27 @@ ticks = sampling_rate * t_final
 car = []
 x_cache = []
 y_cache = []
-p_controller = [PController(0.02, t_sampling),
-                PController(0.1, t_sampling),
-                PController(0.2, t_sampling),
-                PController(0.5, t_sampling)]
+pd_controller = [PdController(0.1, 0.02, t_sampling),
+                 PdController(0.1, 0.1, t_sampling),
+                 PdController(0.1, 0.2, t_sampling),
+                 PdController(0.1, 0.5, t_sampling)]
 
-# Simulation of the car with 4 different values of kp
+# Simulation of the car with kp = 0.1 and 4 different values of kd
 for i in range(4):
     car.append(Car(y_position=0.3, offset_bias=np.deg2rad(1)))  # Create a new car to be appended to the car array
     x_cache.append(np.array([car[i].get_x()]))  # Create a new x cache to be appended to the array of x caches
     y_cache.append(np.array([car[i].get_y()]))  # Create a new y cache to be appended to the array of y caches
     for t in range(ticks):
-        car_steering_angle = p_controller[i].control(car[i].get_y())
+        car_steering_angle = pd_controller[i].control(car[i].get_y())
         car[i].move(car_steering_angle, t_sampling)
         x_cache[i] = np.vstack((x_cache[i], [car[i].get_x()]))
         y_cache[i] = np.vstack((y_cache[i], [car[i].get_y()]))
 
 # Plot all of the car simulations on one graph
-plt.plot(x_cache[0], y_cache[0], label="K$_p$ = 0.02")
-plt.plot(x_cache[1], y_cache[1], label="K$_p$ = 0.1")
-plt.plot(x_cache[2], y_cache[2], label="K$_p$ = 0.2")
-plt.plot(x_cache[3], y_cache[3], label="K$_p$ = 0.5")
+plt.plot(x_cache[0], y_cache[0], label="K$_d$ = 0.02")
+plt.plot(x_cache[1], y_cache[1], label="K$_d$ = 0.1")
+plt.plot(x_cache[2], y_cache[2], label="K$_d$ = 0.2")
+plt.plot(x_cache[3], y_cache[3], label="K$_d$ = 0.5")
 plt.grid()
 plt.xlabel('x position (m)')
 plt.ylabel('y position (m)')
