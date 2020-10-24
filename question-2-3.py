@@ -160,12 +160,12 @@ car = []
 x_cache = []
 y_cache = []
 u_cache = []
-pid_controller = [PidController(0.5, 0.3, 0.02, t_sampling),
-                  PidController(0.5, 0.3, 0.1, t_sampling),
-                  PidController(0.5, 0.3, 0.2, t_sampling),
-                  PidController(0.5, 0.3, 0.5, t_sampling)]
+pid_controller = [PidController(0.6, 0.4, 0.01, t_sampling),
+                  PidController(0.6, 0.4, 0.05, t_sampling),
+                  PidController(0.6, 0.4, 0.1, t_sampling),
+                  PidController(0.6, 0.4, 0.25, t_sampling)]
 
-# Simulation of the car with kp = 0.1 and 4 different values of kd
+# Simulation of the car with kp = 0.6, kd = 0.4 and 4 different values of kd
 for i in range(4):
     car.append(Car(y_position=0.3, offset_bias=np.deg2rad(1)))  # Create a new car to be appended to the car array
     x_cache.append(np.array([car[i].get_x()]))  # Create a new x cache to be appended to the array of x caches
@@ -181,10 +181,10 @@ for i in range(4):
 
 # Plot all of the u trajectories of the car simulations on one graph
 t_span = t_sampling * np.arange(ticks + 1)
-plt.plot(t_span, u_cache[0], label="K$_i$ = 0.02")
-plt.plot(t_span, u_cache[1], label="K$_i$ = 0.1")
-plt.plot(t_span, u_cache[2], label="K$_i$ = 0.2")
-plt.plot(t_span, u_cache[3], label="K$_i$ = 0.5")
+plt.plot(t_span, u_cache[0], label="K$_i$ = 0.01")
+plt.plot(t_span, u_cache[1], label="K$_i$ = 0.05")
+plt.plot(t_span, u_cache[2], label="K$_i$ = 0.1")
+plt.plot(t_span, u_cache[3], label="K$_i$ = 0.25")
 plt.grid()
 plt.xlabel('Time (s)')
 plt.ylabel('Steering Angle (rad)')
