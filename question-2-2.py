@@ -158,13 +158,13 @@ for i in range(4):
         x_cache[i] = np.vstack((x_cache[i], [car[i].get_x()]))
         y_cache[i] = np.vstack((y_cache[i], [car[i].get_y()]))
 
-# Plot all of the car simulations on one graph
+# Plot all of the x-y trajectories of the car simulations on one graph
 plt.plot(x_cache[0], y_cache[0], label="K$_d$ = 0.02")
 plt.plot(x_cache[1], y_cache[1], label="K$_d$ = 0.1")
 plt.plot(x_cache[2], y_cache[2], label="K$_d$ = 0.2")
 plt.plot(x_cache[3], y_cache[3], label="K$_d$ = 0.5")
 plt.grid()
-plt.xlabel('x position (m)')
-plt.ylabel('y position (m)')
+plt.xlabel('x Position (m)')
+plt.ylabel('y Position (m)')
 plt.legend()
 plt.show()
