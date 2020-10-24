@@ -34,6 +34,7 @@ class Car:
         :param dt: The difference between consecutive time values in seconds
         :return: The solution describing the system dynamics over time
         """
+
         # Step 1 - Define the system dynamics
         def system_dynamics(t, z):
             """
@@ -69,11 +70,12 @@ class Car:
         # Step 5 - Return the solution describing the system dynamics over time
         return solution
 
+
 # Declare the Car object and global variables
 car_1 = Car(x_position=0, y_position=0.3, pose=-np.pi / 36.)
 car_steering_angle = np.pi / 90.
 t_final = 2.
-num_points = 1000   # The resolution of the graph
+num_points = 1000  # The resolution of the graph
 car_trajectory = car_1.move(car_steering_angle)
 
 # Question 1.1 - Plot x position (m) against time (s)
