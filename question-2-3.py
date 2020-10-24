@@ -155,7 +155,7 @@ t_final = 50
 t_sampling = 1. / sampling_rate
 ticks = sampling_rate * t_final
 
-# Declare the arrays to store all of the car objects, x caches, y caches, u caches, and P controllers
+# Declare the arrays to store all of the car objects, x caches, y caches, u caches, and PID controllers
 car = []
 x_cache = []
 y_cache = []
@@ -165,7 +165,7 @@ pid_controller = [PidController(0.6, 0.4, 0.01, t_sampling),
                   PidController(0.6, 0.4, 0.1, t_sampling),
                   PidController(0.6, 0.4, 0.25, t_sampling)]
 
-# Simulation of the car with kp = 0.6, kd = 0.4 and 4 different values of kd
+# Simulation of the car with kp = 0.6, kd = 0.4, and 4 different values of kd
 for i in range(4):
     car.append(Car(y_position=0.3, offset_bias=np.deg2rad(1)))  # Create a new car to be appended to the car array
     x_cache.append(np.array([car[i].get_x()]))  # Create a new x cache to be appended to the array of x caches

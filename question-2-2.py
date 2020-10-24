@@ -138,7 +138,7 @@ t_final = 50
 t_sampling = 1. / sampling_rate
 ticks = sampling_rate * t_final
 
-# Declare the arrays to store all of the car objects, x caches, y caches, and P controllers
+# Declare the arrays to store all of the car objects, x caches, y caches, and PD controllers
 car = []
 x_cache = []
 y_cache = []
