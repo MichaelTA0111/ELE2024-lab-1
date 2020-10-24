@@ -27,21 +27,20 @@ class Car:
         self.__y_position = y_position
         self.__pose = pose
 
-    def move(self, steering_angle, dt=0.001):
+    def move(self, steering_angle, dt):
         """
-        Function to make the Car object move according to the dynamics of the system
-        :param steering_angle: The steering angle of the car in radians
-        :param dt: The difference between consecutive time values in seconds
+        Method to make the Car object move according to the dynamics of the system
+        :param steering_angle: The angle between the wheels and the car in radians
+        :param dt: The difference between the end and start times in seconds
         :return: The solution describing the system dynamics over time
         """
-
         # Step 1 - Define the system dynamics
         def system_dynamics(t, z):
             """
-            Defines the system dynamics given in equations 2.1a-c
-                         [ v * cos(theta) ]
-             g(t, z)   = [ v * sin(theta) ]
-                         [ v * tan(u) / L ]
+            Method to describe the system dynamics given in equations 2.1a-c
+                        [ v * cos(theta) ]
+            g(t, z)   = [ v * sin(theta) ]
+                        [ v * tan(u) / L ]
             :param t: The variable time, which is unused in this system of equations
             :param z: An array containing the x position, y position and pose of the system
             :return: The calculated results for each equation inside function g(t, z)
@@ -58,9 +57,9 @@ class Car:
 
         # Step 3 - Call solve_ivp
         solution = solve_ivp(system_dynamics,
-                             [0., t_final],
+                             [0, dt],
                              z_initial,
-                             t_eval=np.linspace(0., t_final, num_points))
+                             t_eval=np.linspace(0, dt, num_points))
 
         # Step 4 - Store the final values of x, y, and theta in the Car object
         self.__x_position = solution.y[0][-1]
@@ -72,11 +71,10 @@ class Car:
 
 
 # Declare the Car object and global variables
-car_1 = Car(x_position=0, y_position=0.3, pose=-np.pi / 36.)
-car_steering_angle = np.pi / 90.
-t_final = 2.
+car = Car(y_position=0.3, pose=np.deg2rad(5))
+car_steering_angle = np.deg2rad(-2)
 num_points = 1000  # The resolution of the graph
-car_trajectory = car_1.move(car_steering_angle)
+car_trajectory = car.move(car_steering_angle, 2)
 
 # Question 1.1 - Plot x position (m) against time (s)
 plt.plot(car_trajectory.t, car_trajectory.y[0].T)
