@@ -70,79 +70,6 @@ class Car:
         # Step 5 - Return the solution describing the system dynamics over time
         return solution
 
-    def get_x(self):
-        """
-        Getter for the x position of the Car object
-        :return: The x position of the Car object
-        """
-        return self.__x_position
-
-    def get_y(self):
-        """
-        Getter for the y position of the Car object
-        :return: The y position of the Car object
-        """
-        return self.__y_position
-
-    def get_pose(self):
-        """
-        Getter for the angle the car makes with the positive x axis in an anticlockwise direction
-        :return: The angle the car makes with the positive x axis in an anticlockwise direction
-        """
-        return self.__pose
-
-
-class PidController:
-    """
-    Class to define the PController object
-    """
-
-    def __init__(self,
-                 kp,
-                 kd,
-                 ki,
-                 ts):
-        """
-        Constructor for the PidController class
-        :param kp: The continuous-time gain for the proportional controller
-        :param kd: The continuous-time gain for the differential controller
-        :param ki: The continuous-time gain for the integral controller
-        :param ts: The sampling time of the controller
-        """
-        self.__kp = kp
-        self.__kd = kd / ts  # Discrete-time kd
-        self.__ki = ki * ts  # Discrete-time ki
-        self.__ts = ts
-        self.__error_previous = None  # The error recorded the previous time it was calculated
-        self.__sum_errors = 0.  # The sum of all previous errors calculated
-        self.__u = 0.
-
-    def control(self, y, set_point=0.):
-        """
-        Method to calculate the control error
-        :param y: The measured value of y
-        :param set_point: The set point value of y
-        :return: The PID control variable
-        """
-        # Calculate the error
-        error = set_point - y
-
-        # Define u from the proportional controller
-        u = self.__kp * error
-
-        # Add to u based on the differential controller
-        if self.__error_previous is not None:
-            u += self.__kd * (error - self.__error_previous)
-
-        # Add to u based on the integral controller
-        u += self.__ki * self.__sum_errors
-
-        self.__error_previous = error  # Store the calculated error as the previous error for future use
-        self.__sum_errors += error  # Add the error to the sum of all previous errors
-        self.__u = u
-
-        return u
-
 
 # Declare the 2 dimensional array of Car objects
 car = [[Car(velocity=1), Car(velocity=2), Car(velocity=5), Car(velocity=10)],
@@ -150,22 +77,18 @@ car = [[Car(velocity=1), Car(velocity=2), Car(velocity=5), Car(velocity=10)],
        [Car(), Car(pose=np.deg2rad(90)), Car(pose=np.deg2rad(180)), Car(pose=np.deg2rad(270))]]
 
 # Declare the global variables
-sampling_rate = 40
-t_sampling = 1 / sampling_rate
 dt = 500
 car_steering_angle = np.deg2rad(-5)
 num_points = 1000  # The resolution of the graph
-pid_controller = []
 car_trajectory = []
 
-# Simulation of the car with kp = 0.5, kd = 0.05, ki = 0.01, and different initial values of v, L, and theta
+# Simulation of the car with different initial values of v, L, and theta
 for j in range(3):
-    # Add an empty array within the pid controller and car trajectory arrays to aid plotting the graphs later
-    pid_controller.append([])
+    # Add an empty array within the car trajectory array to aid plotting the graphs later
     car_trajectory.append([])
+
     for i in range(4):
-        # Create a new PID controller to be appended to the corresponding array of PID controllers
-        pid_controller[j].append(PidController(0.5, 0.05, 0.01, t_sampling))
+        # Append the solution of the system dynamics to the car trajectory array
         car_trajectory[j].append(car[j][i].move(car_steering_angle, dt))
 
     if j == 0:
