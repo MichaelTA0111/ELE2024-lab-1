@@ -16,7 +16,7 @@ class Car:
                  pose=0.):
         """
         Constructor for the Car class
-        :param length: The length of the car in metres
+        :param length: The distance between the car axles in metres
         :param velocity: The velocity of the car in metres per second
         :param x_position: The x position of the car in metres
         :param y_position: The y position of the car in metres
@@ -167,4 +167,5 @@ plt.grid()
 plt.xlabel('x Position (m)')
 plt.ylabel('y Position (m)')
 plt.legend()
+plt.savefig('figures\\question_2_2.svg', format='svg')
 plt.show()

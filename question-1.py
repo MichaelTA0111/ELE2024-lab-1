@@ -15,7 +15,7 @@ class Car:
                  pose=0.):
         """
         Constructor for the Car class
-        :param length: The length of the car in metres
+        :param length: The distance between the car axles in metres
         :param velocity: The velocity of the car in metres per second
         :param x_position: The x position of the car in metres
         :param y_position: The y position of the car in metres
@@ -81,6 +81,7 @@ plt.plot(car_trajectory.t, car_trajectory.y[0].T)
 plt.xlabel('Time (s)')
 plt.ylabel('x position (m)')
 plt.grid()
+plt.savefig('figures\\question_1_1_a.svg', format='svg')
 plt.show()
 
 # Question 1.1 - Plot y position (m) against time (s)
@@ -88,6 +89,7 @@ plt.plot(car_trajectory.t, car_trajectory.y[1].T)
 plt.xlabel('Time (s)')
 plt.ylabel('y position (m)')
 plt.grid()
+plt.savefig('figures\\question_1_1_b.svg', format='svg')
 plt.show()
 
 # Question 1.1 - Plot theta (rad) against time (s)
@@ -95,6 +97,7 @@ plt.plot(car_trajectory.t, car_trajectory.y[2].T)
 plt.xlabel('Time (s)')
 plt.ylabel('Theta (rad)')
 plt.grid()
+plt.savefig('figures\\question_1_1_c.svg', format='svg')
 plt.show()
 
 # Question 1.2 - Plot y position (m) against x position (m)
@@ -102,4 +105,5 @@ plt.plot(car_trajectory.y[0], car_trajectory.y[1].T)
 plt.xlabel('x Position (m)')
 plt.ylabel('y Position (m)')
 plt.grid()
+plt.savefig('figures\\question_1_2.svg', format='svg')
 plt.show()
