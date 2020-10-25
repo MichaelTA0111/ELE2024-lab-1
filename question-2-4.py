@@ -20,7 +20,8 @@ class Car:
         :param velocity: The velocity of the car in metres per second
         :param x_position: The x position of the car in metres
         :param y_position: The y position of the car in metres
-        :param pose: The angle the car makes with the positive x axis in an anticlockwise direction
+        :param offset_bias: The constant bias of the actuator in radians
+        :param pose: The angle the car makes with the positive x axis in an anticlockwise direction in radians
         """
         self.__length = length
         self.__velocity = velocity
@@ -34,7 +35,6 @@ class Car:
         Function to make the Car object move according to the dynamics of the system
         :param steering_angle: The steering angle of the car in radians
         :param dt: The difference between the end and start times in seconds
-        :return: The solution describing the system dynamics over time
         """
 
         # Step 1 - Define the system dynamics
@@ -140,13 +140,6 @@ class PidController:
         self.__u = u
 
         return u
-
-    def get_u(self):
-        """
-        Getter for the steering angle
-        :return: The steering angle
-        """
-        return self.__u
 
 
 # Declare the global variables

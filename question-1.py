@@ -19,7 +19,7 @@ class Car:
         :param velocity: The velocity of the car in metres per second
         :param x_position: The x position of the car in metres
         :param y_position: The y position of the car in metres
-        :param pose: The angle the car makes with the positive x axis in an anticlockwise direction
+        :param pose: The angle the car makes with the positive x axis in an anticlockwise direction in radians
         """
         self.__length = length
         self.__velocity = velocity

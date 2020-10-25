@@ -12,7 +12,6 @@ class Car:
                  velocity=5.,
                  x_position=0.,
                  y_position=0.,
-                 offset_bias=0.,
                  pose=0.):
         """
         Constructor for the Car class
@@ -20,14 +19,12 @@ class Car:
         :param velocity: The velocity of the car in metres per second
         :param x_position: The x position of the car in metres
         :param y_position: The y position of the car in metres
-        :param offset_bias: The constant bias of the actuator in radians
         :param pose: The angle the car makes with the positive x axis in an anticlockwise direction in radians
         """
         self.__length = length
         self.__velocity = velocity
         self.__x_position = x_position
         self.__y_position = y_position
-        self.__offset_bias = offset_bias
         self.__pose = pose
 
     def move(self, steering_angle, dt):
@@ -35,15 +32,16 @@ class Car:
         Function to make the Car object move according to the dynamics of the system
         :param steering_angle: The steering angle of the car in radians
         :param dt: The difference between the end and start times in seconds
+        :return: The solution describing the system dynamics over time
         """
 
         # Step 1 - Define the system dynamics
         def system_dynamics(t, z):
             """
-            Defines the system dynamics given in equations 3.11a-c
+            Defines the system dynamics given in equations 4.1a-c
                         [ v * cos(theta) ]
             g(t, z)   = [ v * sin(theta) ]
-                        [ v * tan(u + w) / L ]
+                        [ v * tan(u) / L ]
             :param t: The variable time, which is unused in this system of equations
             :param z: An array containing the x position, y position and pose of the system
             :return: The calculated results for each equation inside function g(t, z)
@@ -51,7 +49,7 @@ class Car:
             theta = z[2]
             return [self.__velocity * np.cos(theta),
                     self.__velocity * np.sin(theta),
-                    self.__velocity * np.tan(steering_angle + self.__offset_bias) / self.__length]
+                    self.__velocity * np.tan(steering_angle) / self.__length]
 
         # Step 2 - Define the initial condition z(0) = [x(0), y(0), theta(0)]
         z_initial = [self.__x_position,
@@ -61,12 +59,16 @@ class Car:
         # Step 3 - Call solve_ivp
         solution = solve_ivp(system_dynamics,
                              [0, dt],
-                             z_initial)
+                             z_initial,
+                             t_eval=np.linspace(0, dt, num_points))
 
         # Step 4 - Store the final values of x, y, and theta in the Car object
         self.__x_position = solution.y[0][-1]
         self.__y_position = solution.y[1][-1]
         self.__pose = solution.y[2][-1]
+
+        # Step 5 - Return the solution describing the system dynamics over time
+        return solution
 
     def get_x(self):
         """
@@ -141,63 +143,54 @@ class PidController:
 
         return u
 
-    def get_u(self):
-        """
-        Getter for the steering angle
-        :return: The steering angle
-        """
-        return self.__u
 
+# Declare the 2 dimensional array of Car objects
+car = [[Car(velocity=1), Car(velocity=2), Car(velocity=5), Car(velocity=10)],
+       [Car(length=1), Car(length=2), Car(length=5), Car(length=10)],
+       [Car(), Car(pose=np.deg2rad(90)), Car(pose=np.deg2rad(180)), Car(pose=np.deg2rad(270))]]
 
 # Declare the global variables
 sampling_rate = 40
-t_final = 50
-t_sampling = 1. / sampling_rate
-ticks = sampling_rate * t_final
+t_sampling = 1 / sampling_rate
+dt = 500
+car_steering_angle = np.deg2rad(-5)
+num_points = 1000  # The resolution of the graph
+pid_controller = []
+car_trajectory = []
 
-# Declare the arrays to store all of the car objects, x caches, y caches, u caches, and PID controllers
-car = []
-x_cache = []
-y_cache = []
-u_cache = []
-pid_controller = [PidController(0.6, 0.4, 0.01, t_sampling),
-                  PidController(0.6, 0.4, 0.05, t_sampling),
-                  PidController(0.6, 0.4, 0.1, t_sampling),
-                  PidController(0.6, 0.4, 0.25, t_sampling)]
+# Simulation of the car with kp = 0.5, kd = 0.05, ki = 0.01, and different initial values of v, L, and theta
+for j in range(3):
+    # Add an empty array within the pid controller and car trajectory arrays to aid plotting the graphs later
+    pid_controller.append([])
+    car_trajectory.append([])
+    for i in range(4):
+        # Create a new PID controller to be appended to the corresponding array of PID controllers
+        pid_controller[j].append(PidController(0.5, 0.05, 0.01, t_sampling))
+        car_trajectory[j].append(car[j][i].move(car_steering_angle, dt))
 
-# Simulation of the car with kp = 0.6, kd = 0.4, and 4 different values of kd
-for i in range(4):
-    car.append(Car(y_position=0.3, offset_bias=np.deg2rad(1)))  # Create a new car to be appended to the car array
-    x_cache.append(np.array([car[i].get_x()]))  # Create a new x cache to be appended to the array of x caches
-    y_cache.append(np.array([car[i].get_y()]))  # Create a new y cache to be appended to the array of y caches
-    # Create a new u cache to be appended to the array of u caches
-    u_cache.append(np.array([pid_controller[i].get_u()]))
-    for t in range(ticks):
-        car_steering_angle = pid_controller[i].control(car[i].get_y())
-        car[i].move(car_steering_angle, t_sampling)
-        x_cache[i] = np.vstack((x_cache[i], [car[i].get_x()]))
-        y_cache[i] = np.vstack((y_cache[i], [car[i].get_y()]))
-        u_cache[i] = np.vstack((u_cache[i], [pid_controller[i].get_u()]))
+    if j == 0:
+        # Plot all of the x-y trajectories of the cars simulations on one graph, varying initial velocity
+        plt.plot(car_trajectory[j][0].y[0], car_trajectory[j][0].y[1].T, label="v = 1 m/s")
+        plt.plot(car_trajectory[j][1].y[0], car_trajectory[j][1].y[1].T, label="v = 2 m/s")
+        plt.plot(car_trajectory[j][2].y[0], car_trajectory[j][2].y[1].T, label="v = 5 m/s")
+        plt.plot(car_trajectory[j][3].y[0], car_trajectory[j][3].y[1].T, label="v = 10 m/s")
 
-# Plot all of the u trajectories of the car simulations on one graph
-t_span = t_sampling * np.arange(ticks + 1)
-plt.plot(t_span, u_cache[0], label="K$_i$ = 0.01")
-plt.plot(t_span, u_cache[1], label="K$_i$ = 0.05")
-plt.plot(t_span, u_cache[2], label="K$_i$ = 0.1")
-plt.plot(t_span, u_cache[3], label="K$_i$ = 0.25")
-plt.grid()
-plt.xlabel('Time (s)')
-plt.ylabel('Steering Angle (rad)')
-plt.legend()
-plt.show()
+    if j == 1:
+        # Plot all of the x-y trajectories of the cars simulations on one graph, varying car length
+        plt.plot(car_trajectory[j][0].y[0], car_trajectory[j][0].y[1].T, label="L = 1 m")
+        plt.plot(car_trajectory[j][1].y[0], car_trajectory[j][1].y[1].T, label="L = 2 m")
+        plt.plot(car_trajectory[j][2].y[0], car_trajectory[j][2].y[1].T, label="L = 5 m")
+        plt.plot(car_trajectory[j][3].y[0], car_trajectory[j][3].y[1].T, label="L = 10 m")
 
-# Plot all of the x-y trajectories of the car simulations on one graph
-plt.plot(x_cache[0], y_cache[0], label="K$_i$ = 0.02")
-plt.plot(x_cache[1], y_cache[1], label="K$_i$ = 0.1")
-plt.plot(x_cache[2], y_cache[2], label="K$_i$ = 0.2")
-plt.plot(x_cache[3], y_cache[3], label="K$_i$ = 0.5")
-plt.grid()
-plt.xlabel('x Position (m)')
-plt.ylabel('y Position (m)')
-plt.legend()
-plt.show()
+    if j == 2:
+        # Plot all of the x-y trajectories of the cars simulations on one graph, varying initial pose
+        plt.plot(car_trajectory[j][0].y[0], car_trajectory[j][0].y[1].T, label="Theta = 0 degrees")
+        plt.plot(car_trajectory[j][1].y[0], car_trajectory[j][1].y[1].T, label="Theta = 90 degrees")
+        plt.plot(car_trajectory[j][2].y[0], car_trajectory[j][2].y[1].T, label="Theta = 180 degrees")
+        plt.plot(car_trajectory[j][3].y[0], car_trajectory[j][3].y[1].T, label="Theta = 270 degrees")
+
+    plt.grid()
+    plt.xlabel('x Position (m)')
+    plt.ylabel('y Position (m)')
+    plt.legend()
+    plt.show()
