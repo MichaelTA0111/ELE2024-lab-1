@@ -5,10 +5,10 @@ from PidController import PidController as PidCtrl
 
 
 # Declare the global variables
-sampling_rate = 40
-t_final = 50
-t_sampling = 1. / sampling_rate
-ticks = sampling_rate * t_final
+sampling_rate = 40  # Frequency in Hz
+t_final = 50  # The final time of the simulation
+t_sampling = 1. / sampling_rate  # Time between consecutive samples
+ticks = sampling_rate * t_final  # Total number of samples taken
 
 # Declare the arrays to store all of the car objects, x caches, y caches, u caches, and PID controllers
 car = []
@@ -35,7 +35,7 @@ for i in range(4):
         u_cache[i] = np.vstack((u_cache[i], [pid_controller[i].get_u()]))
 
 # Plot all of the u trajectories of the car simulations on one graph
-t_span = t_sampling * np.arange(ticks + 1)
+t_span = t_sampling * np.arange(ticks + 1)  # All values of time which were used for sampling
 plt.plot(t_span, u_cache[0], label="K$_i$ = 0.01")
 plt.plot(t_span, u_cache[1], label="K$_i$ = 0.05")
 plt.plot(t_span, u_cache[2], label="K$_i$ = 0.1")
@@ -44,7 +44,7 @@ plt.grid()
 plt.xlabel('Time (s)')
 plt.ylabel('Steering Angle (rad)')
 plt.legend()
-plt.savefig('figures\\question_2_3_a.svg', format='svg')
+plt.savefig('figures\\question_2_3_a.svg', format='svg')  # Save the graph as a .svg file
 plt.show()
 
 # Plot all of the x-y trajectories of the car simulations on one graph
@@ -56,5 +56,5 @@ plt.grid()
 plt.xlabel('x Position (m)')
 plt.ylabel('y Position (m)')
 plt.legend()
-plt.savefig('figures\\question_2_3_b.svg', format='svg')
+plt.savefig('figures\\question_2_3_b.svg', format='svg')  # Save the graph as a .svg file
 plt.show()

@@ -9,9 +9,11 @@ car = [[Car(velocity=1), Car(velocity=2), Car(velocity=5), Car(velocity=10)],
        [Car(), Car(pose=np.deg2rad(90)), Car(pose=np.deg2rad(180)), Car(pose=np.deg2rad(270))]]
 
 # Declare the global variables
-dt = 500
-car_steering_angle = np.deg2rad(-5)
+dt = 500  # The total time of the simulation
+car_steering_angle = np.deg2rad(-5)  # The steering angle of the car, which is a constant
 num_points = 1000  # The resolution of the graph
+
+# Declare the array to store all of the car trajectories
 car_trajectory = []
 
 # Simulation of the car with different initial values of v, L, and theta
@@ -50,10 +52,10 @@ for j in range(3):
     plt.legend()
 
     if j == 0:
-        plt.savefig('figures\\question_3_a.svg', format='svg')
+        plt.savefig('figures\\question_3_a.svg', format='svg')  # Save the graph as a .svg file
     if j == 1:
-        plt.savefig('figures\\question_3_b.svg', format='svg')
+        plt.savefig('figures\\question_3_b.svg', format='svg')  # Save the graph as a .svg file
     if j == 2:
-        plt.savefig('figures\\question_3_c.svg', format='svg')
+        plt.savefig('figures\\question_3_c.svg', format='svg')  # Save the graph as a .svg file
 
     plt.show()

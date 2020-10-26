@@ -7,8 +7,8 @@ from Car import Car
 car = Car(y_position=0.3, pose=np.deg2rad(5))
 
 # Declare global variables
-car_steering_angle = np.deg2rad(-2)
-dt = 2
+car_steering_angle = np.deg2rad(-2)  # The steering angle of the car, which is a constant
+dt = 2  # The total time of the simulation
 num_points = 1000  # The resolution of the graph
 car_trajectory = car.move(car_steering_angle, dt, num_points)
 
@@ -17,7 +17,7 @@ plt.plot(car_trajectory.t, car_trajectory.y[0].T)
 plt.xlabel('Time (s)')
 plt.ylabel('x Position (m)')
 plt.grid()
-plt.savefig('figures\\question_1_1_a.svg', format='svg')
+plt.savefig('figures\\question_1_1_a.svg', format='svg')  # Save the graph as a .svg file
 plt.show()
 
 # Question 1.1 - Plot y position (m) against time (s)
@@ -25,7 +25,7 @@ plt.plot(car_trajectory.t, car_trajectory.y[1].T)
 plt.xlabel('Time (s)')
 plt.ylabel('y Position (m)')
 plt.grid()
-plt.savefig('figures\\question_1_1_b.svg', format='svg')
+plt.savefig('figures\\question_1_1_b.svg', format='svg')  # Save the graph as a .svg file
 plt.show()
 
 # Question 1.1 - Plot theta (rad) against time (s)
@@ -33,7 +33,7 @@ plt.plot(car_trajectory.t, car_trajectory.y[2].T)
 plt.xlabel('Time (s)')
 plt.ylabel('Theta (rad)')
 plt.grid()
-plt.savefig('figures\\question_1_1_c.svg', format='svg')
+plt.savefig('figures\\question_1_1_c.svg', format='svg')  # Save the graph as a .svg file
 plt.show()
 
 # Question 1.2 - Plot y position (m) against x position (m)
@@ -41,5 +41,5 @@ plt.plot(car_trajectory.y[0], car_trajectory.y[1].T)
 plt.xlabel('x Position (m)')
 plt.ylabel('y Position (m)')
 plt.grid()
-plt.savefig('figures\\question_1_2.svg', format='svg')
+plt.savefig('figures\\question_1_2.svg', format='svg')  # Save the graph as a .svg file
 plt.show()

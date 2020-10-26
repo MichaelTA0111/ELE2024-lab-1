@@ -5,10 +5,10 @@ from PController import PController as PCtrl
 
 
 # Declare the global variables
-sampling_rate = 40
-t_final = 50
-t_sampling = 1. / sampling_rate
-ticks = sampling_rate * t_final
+sampling_rate = 40  # Frequency in Hz
+t_final = 50  # The final time of the simulation
+t_sampling = 1. / sampling_rate  # Time between consecutive samples
+ticks = sampling_rate * t_final  # Total number of samples taken
 
 # Declare the arrays to store all of the car objects, x caches, y caches, and P controllers
 car = []
@@ -39,5 +39,5 @@ plt.grid()
 plt.xlabel('x Position (m)')
 plt.ylabel('y Position (m)')
 plt.legend()
-plt.savefig('figures\\question_2_1.svg', format='svg')
+plt.savefig('figures\\question_2_1.svg', format='svg')  # Save the graph as a .svg file
 plt.show()
