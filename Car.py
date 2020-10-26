@@ -60,12 +60,12 @@ class Car:
                      self.__pose]
 
         # Step 3 - Call solve_ivp
-        if num_points != 0:
+        if num_points != 0:  # For questions 1 and 3
             solution = solve_ivp(system_dynamics,
                                  [0, dt],
                                  z_initial,
                                  t_eval=np.linspace(0, dt, num_points))
-        else:
+        else:  # For question 2
             solution = solve_ivp(system_dynamics,
                                  [0, dt],
                                  z_initial)
