@@ -11,8 +11,9 @@ class PController:
         :param kp: The continuous-time gain for the proportional controller
         :param ts: The sampling time of the controller
         """
-        self.__kp = kp
-        self.__ts = ts
+        self._kp = kp
+        self._ts = ts
+        self._error = 0
 
     def control(self, y, set_point=0.):
         """
@@ -22,9 +23,9 @@ class PController:
         :return: The P control variable
         """
         # Calculate the error
-        error = set_point - y
+        self._error = set_point - y
 
         # Define u from the proportional controller
-        u = self.__kp * error
+        u = self._kp * self._error
 
         return u
